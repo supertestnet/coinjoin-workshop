@@ -12,24 +12,6 @@ var emessbee = {
     },
     hexToBytes: hex => Uint8Array.from( hex.match( /.{1,2}/g ).map( byte => parseInt( byte, 16 ) ) ),
     bytesToHex: bytes => bytes.reduce( ( str, byte ) => str + byte.toString( 16 ).padStart( 2, "0" ), "" ),
-    base64ToHex: str => {
-        var raw = atob(str);
-        var result = '';
-        var i; for ( i=0; i<raw.length; i++ ) {
-            var hex = raw.charCodeAt( i ).toString( 16 );
-            result += hex.length % 2 ? '0' + hex : hex;
-        }
-        return result.toLowerCase();
-    },
-    hexToBase64: hex => btoa( hex.match( /\w{2}/g ).map( a => String.fromCharCode( parseInt( a, 16 ) ) ).join( "" ) ),
-    hexToBech32: ( prefix, hex ) => {
-        var words = bech32.bech32m.toWords( emessbee.hexToBytes( hex ) );
-        return bech32.bech32m.encode( prefix, words, 10_000 );
-    },
-    bech32ToHex: bech32string => {
-        var decoded = bech32.bech32m.fromWords( bech32.bech32m.decode( bech32string, 10_000 ).words );
-        return emessbee.bytesToHex( decoded );
-    },
     sha256: async text_or_bytes => {if ( typeof text_or_bytes === "string" ) text_or_bytes = ( new TextEncoder().encode( text_or_bytes ) );return emessbee.bytesToHex( await nobleSecp256k1.utils.sha256( text_or_bytes ) )},
     waitSomeSeconds: num => {
         var num = num.toString() + "000";
@@ -54,18 +36,6 @@ var emessbee = {
         value: amnt,
         scriptPubKey: tapscript.Address.toScriptPubKey( addy ),
     }),
-    prepCoinjoin: ( amount, cj_id, timestamp ) => {
-        if ( !cj_id ) privkey = emessbee.bytesToHex( nobleSecp256k1.utils.randomPrivateKey() );
-        if ( !cj_id ) var pubkey = nobleSecp256k1.getPublicKey( privkey, true ).substring( 2 );
-        if ( !cj_id ) emessbee.state[ pubkey ] = {privkey}
-        else emessbee.state[ cj_id ] = {}
-        if ( !cj_id ) cj_id = pubkey;
-        emessbee.state[ cj_id ].amount = amount;
-        //TODO: change the 30 to a 250
-        emessbee.state[ cj_id ].until = Math.floor( Date.now() / 1000 ) + 30;
-        if ( timestamp ) emessbee.state[ cj_id ].until = timestamp;
-        return cj_id;
-    },
     getEvents: async ( relay, kinds, until, since, limit, etags, ptags ) => {
         var socket = new WebSocket( relay );
         var events = [];

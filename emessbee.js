@@ -211,12 +211,12 @@ var emessbee = {
         return dataUriPngImage;
     },
     getBlockheight: async network => {
-        var data = await emessbee.getData( `https://${emesbee.mempoolnet}/${network}api/blocks/tip/height` );
+        var data = await emessbee.getData( `https://${emessbee.mempoolnet}/${network}api/blocks/tip/height` );
         return Number( data );
     },
     findLastModulatedBlockhash: async ( modulo, blockheight = null ) => {
         if ( !blockheight ) blockheight = await emessbee.getBlockheight( '' );
-        var blockhash = await emessbee.getData( `https://${emesbee.mempoolnet}/api/block-height/${blockheight}` );
+        var blockhash = await emessbee.getData( `https://${emessbee.mempoolnet}/api/block-height/${blockheight}` );
         var int = Number( BigInt( '0x' + blockhash ) % BigInt( modulo ) );
         if ( !int ) return blockhash;
         blockhash = await emessbee.findLastModulatedBlockhash( modulo, blockheight - 1 );

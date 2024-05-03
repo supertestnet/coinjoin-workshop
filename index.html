@@ -1,183 +1,388 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, user-scalable=no">
-        <script src="https://supertestnet.github.io/coinjoin-workshop/emessbee.js"></script>
-        <script src="https://supertestnet.github.io/bitcoin-chess/js/qrcode.js"></script>
-        <script src="https://supertestnet.github.io/ringsig.js/ringsig.js"></script>
-        <script src="https://unpkg.com/@cmdcode/tapscript@1.4.0"></script>
-        <script src="https://bundle.run/noble-secp256k1@1.2.14"></script>
-        <style>
-            * {
-                box-sizing: border-box;
-                font-size: 1.15rem;
-                font-family: Arial, sans-serif;
-            }
-            html {
-                max-width: 800px;
-                padding: 3rem 1rem;
-                margin: auto;
-                line-height: 1.25;
-                padding: 0;
-            }
-            body {
-                margin: 3rem 1rem;
-            }
-            h1 {
-                font-size: 2rem;
-            }
-            h2 {
-                font-size: 1.5rem;
-            }
-            input {
-                line-height: 1.25;
-                width: 100%;
-                height: 1.8rem;
-                font-size: 1.15rem;
-                border: 1px solid grey;
-            }
-            .hidden {
-                display: none !important;
-            }
-            .time_til {
-                word-break: break-word;
-            }
-            .wallet {
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-            }
-            .balance_div, .toxic_balance_div, .main_btns {
-                text-align: center;
-            }
-            .main_btns {
-                margin-top: 1rem;
-            }
-            .black-bg {
-                width: 100%;
-                position: fixed;
-                top: 0;
-                left: 0;
-                background-color: black;
-                opacity: .5;
-                width: 100vw;
-                height: 100vh;
-            }
-            .modal {
-                position: fixed;
-                box-sizing: border-box;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%,-50%);
-                width: 90%;
-                max-width: 560px;
-                background-color: white;
-                border-radius: 1rem;
-                padding: 20px;
-                color: black;
-                text-align: center;
-                word-wrap: break-word;
-            }
-            .modal * {
-                color: black;
-            }
-            @media screen and (max-width: 600px) {
-            }
-        </style>
-        <script>
-            var $ = document.querySelector.bind( document );
-            var $$ = document.querySelectorAll.bind( document );
-            var url_params = new URLSearchParams( window.location.search );
-            var url_keys = url_params.keys();
-            var $_GET = {}
-            for ( var key of url_keys ) $_GET[ key ] = url_params.get( key );
-        </script>
-    </head>
-    <body>
-        <div class="wallet">
-            <center><div style="font-weight: bold;">Regular balance</div></center>
-            <div class="balance_div">
-                loading...
-            </div>
-            <center><div style="font-weight: bold;">Toxic balance</div></center>
-            <div class="toxic_balance_div">
-                loading...
-            </div>
-            <div class="main_btns">
-                <button class="send_btn">Send</button>
-                <button class="join_btn">Join</button>
-                <button class="receive_btn">Receive</button>
-            </div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+    <script src="https://supertestnet.github.io/coinjoin-workshop/emessbee.js"></script>
+    <script src="https://supertestnet.github.io/bitcoin-chess/js/qrcode.js"></script>
+    <script src="https://supertestnet.github.io/ringsig.js/ringsig.js"></script>
+    <script src="https://unpkg.com/@cmdcode/tapscript@1.4.0"></script>
+    <script src="https://bundle.run/noble-secp256k1@1.2.14"></script>
+    <style>
+        * {box-sizing: border-box;font-size: 1.15rem;font-family: Arial, sans-serif;} html {max-width: 800px;padding: 3rem 1rem;margin: auto;line-height: 1.25;padding: 0;} body {margin: 3rem 1rem;} h1 {font-size: 2rem;} h2 {font-size: 1.5rem;} input {line-height: 1.25;width: 100%;height: 1.8rem;font-size: 1.15rem;border: 1px solid grey;} .hidden {display: none !important;} .wallet {display: flex;flex-direction: column;justify-content: center;} .balance_div, .toxic_balance_div, .main_btns {text-align: center;} .main_btns {margin-top: 1rem;} .black-bg {width: 100%;position: fixed;top: 0;left: 0;background-color: black;opacity: .5;width: 100vw;height: 100vh;} .modal {position: fixed;box-sizing: border-box;top: 50%;left: 50%;transform: translate(-50%,-50%);width: 90%;max-width: 560px;background-color: white;border-radius: 1rem;padding: 20px;color: black;text-align: center;word-wrap: break-word;} .modal * {color: black;}
+    </style>
+    <script>
+        var $ = document.querySelector.bind( document );
+        var $$ = document.querySelectorAll.bind( document );
+    </script>
+</head>
+<body>
+    <div class="wallet">
+        <center><div style="font-weight: bold;">Regular balance</div></center>
+        <div class="balance_div">
+            loading...
         </div>
-        <script>
-            function modalVanish() {
-                $( ".black-bg" ).classList.add( "hidden" );
-                $( ".modal" ).classList.add( "hidden" );
+        <center><div style="font-weight: bold;">Toxic balance</div></center>
+        <div class="toxic_balance_div">
+            loading...
+        </div>
+        <div class="main_btns">
+            <button class="send_btn">Send</button>
+            <button class="join_btn">Join</button>
+            <button class="receive_btn">Receive</button>
+        </div>
+    </div>
+    <script>
+        function modalVanish() {
+            $( ".black-bg" ).classList.add( "hidden" );
+            $( ".modal" ).classList.add( "hidden" );
+        }
+        function showModal( content ) {
+            $( ".modal" ).innerHTML = `<div class="x_modal" style="position: absolute;right: 1rem;top: 0.5rem;font-size: 2rem; cursor: pointer; color: black;" onclick="modalVanish()">&times;</div>`;
+            $( ".modal" ).innerHTML += `<div style="overflow-y: auto; max-height: 80vh; margin-top: 1.5rem;">${content}</div>`;
+            $( ".black-bg" ).classList.remove( "hidden" );
+            $( ".modal" ).classList.remove( "hidden" );
+        }
+        var receive = ( toxic, showmodal ) => {
+            var privkey = emessbee.bytesToHex( nobleSecp256k1.utils.randomPrivateKey() );
+            var pubkey = nobleSecp256k1.getPublicKey( privkey, true ).substring( 2 );
+            var address = tapscript.Address.fromScriptPubKey( [ "OP_1", pubkey ], emessbee.network );
+            var item_to_push = [privkey];
+            if ( toxic ) item_to_push.push( "toxic" );
+            emessbee.state.privkeys.push( item_to_push );
+            sessionStorage[ "state" ] = JSON.stringify( emessbee.state );
+            if ( showmodal ) {
+                var url = "bitcoin:" + address;
+                var a = document.createElement( "a" );
+                a.href = url;
+                a.target = "_blank";
+                var img = emessbee.createQR( url.toUpperCase() );
+                img.style.maxWidth = "15rem"
+                a.append( img );
+                var prep_div = document.createElement( "div" );
+                prep_div.append( a );
+                var div_html = prep_div.innerHTML;
+                var html = `${div_html}`;
+                showModal( html + `<p>${address}</p>` );
             }
-            function showModal( content ) {
-                $( ".modal" ).innerHTML = `<div class="x_modal" style="position: absolute;right: 1rem;top: 0.5rem;font-size: 2rem; cursor: pointer; color: black;" onclick="modalVanish()">&times;</div>`;
-                $( ".modal" ).innerHTML += `<div style="overflow-y: auto; max-height: 80vh; margin-top: 1.5rem;">${content}</div>`;
-                $( ".black-bg" ).classList.remove( "hidden" );
-                $( ".modal" ).classList.remove( "hidden" );
-            }
-            $( '.send_btn' ).onclick = async () => {
-                var destino = prompt( `enter a destination address` );
-                if ( !emessbee.isValidAddress( destino ) ) return alert( `try again with a valid bitcoin address` );
-                var amnt = Number( prompt( `enter an amount of sats you want to send there` ) );
-                if ( amnt < 546 || isNaN( amnt ) ) return alert( `try again with a valid amount` );
-                var first_amount_check = emessbee.getBalance( emessbee.state.utxos ) > amnt + 330;
-                if ( !first_amount_check ) first_amount_check = emessbee.getToxicBalance( emessbee.state.utxos ) > amnt + 330;
-                if ( !first_amount_check ) return alert( `Sorry, you don't have enough money, please try again` );
-                var fee_options = await emessbee.getThreeFeeRates();
-                var sats_per_byte = Number( prompt( `Please enter a fee rate as a number. Specifically, the number of sats per byte you want to pay. The minimum rate is ${fee_options[ 0 ]}, the average rate is ${fee_options[ 1 ]}, and the urgent rate is ${fee_options[ 2 ]}.` ) );
-                if ( !sats_per_byte ) return alert( "You entered an invalid fee rate. You must enter a number greater than 0, such as 5, 10, or 25. Please try again." );
-                var for_coinjoin = false;
-                var utxos = emessbee.getUtxos( emessbee.state.utxos, amnt, for_coinjoin );
-                if ( !utxos ) return;
-                var set_has_toxins;
-                utxos.forEach( item => {
-                    if ( "toxic" in item ) set_has_toxins = true;
-                });
-                if ( !set_has_toxins ) var sum_so_far = emessbee.getBalance( utxos );
-                else var sum_so_far = emessbee.getToxicBalance( utxos );
-                var change_amnt = sum_so_far - amnt;
-                var toxic = false;
-                var showmodal = false;
-                var change_addy = receive( toxic, showmodal );
-                var txdata = tapscript.Tx.create({
-                    vin: [],
-                    vout: [
-                        emessbee.getVout( amnt, destino ),
-                        emessbee.getVout( change_amnt, change_addy ),
-                    ],
-                });
-                utxos.forEach( utxo => txdata.vin.push( emessbee.getVin( utxo[ "txid" ], utxo[ "vout" ], utxo[ "amnt" ], utxo[ "addy" ] ) ) );
-                //I assumes signatures cost 17 vbytes because they are 64 bytes apiece plus, I assume, 2 bytes for stating their length, and, since
-                //those 66 bytes are in the witness stack, they get the witness discount by dividing by 4 -- yielding 16.5 i.e. 17 vbytes per sig
-                var vsize = tapscript.Tx.util.getTxSize( txdata ).vsize + ( 17 * txdata.vin.length );
-                var fee_so_far = vsize * sats_per_byte;
-                var need_extra_input = false;
-                if ( txdata[ "vout" ][ 1 ][ "value" ] - fee_so_far < 330 ) need_extra_input = true;
-                if ( need_extra_input ) {
-                    //each extra input adds 41 + 17 = 58 vbytes
-                    var fee_so_far = fee_so_far + ( 58 * sats_per_byte );
-                    var remaining_utxos = JSON.parse( JSON.stringify( emessbee.state.utxos ) );
-                    remaining_utxos = remaining_utxos.map( JSON.stringify );
-                    utxos.forEach( ( utxo, index ) => {
-                        if ( remaining_utxos.includes( JSON.stringify( utxo ) ) ) remaining_utxos.splice( remaining_utxos.indexOf( JSON.stringify( utxo ) ), 1 );
-                    });
-                    remaining_utxos = remaining_utxos.map( JSON.parse );
-                    var biggest_utxo_index;
-                    var biggest_utxo_amnt = 0;
-                    var i; for ( i=0; i<remaining_utxos.length; i++ ) {
-                        var utxo = remaining_utxos[ i ];
-                        var index = i;
-                        if ( utxo[ "amnt" ] > biggest_utxo_amnt ) {
-                            biggest_utxo_index = index;
-                            biggest_utxo_amnt = utxo[ "amnt" ];
-                        }
+            return address;
+        }
+        $( '.receive_btn' ).onclick = () => {var toxic = false;var showmodal = true;console.log( receive( toxic, showmodal ) );}
+        var getUTXOs = async privkey_info => {
+            var privkey = privkey_info[ 0 ];
+            var pubkey = nobleSecp256k1.getPublicKey( privkey, true ).substring( 2 );
+            var address = tapscript.Address.fromScriptPubKey( [ "OP_1", pubkey ], emessbee.network );
+            var esplorautxos = await emessbee.getData( "https://mutinynet.com/api/address/" + address + "/utxo" );
+            esplorautxos = JSON.parse( esplorautxos );
+            var obj = [];
+            esplorautxos.forEach( function( item, index ) {
+                var utxo = {}
+                utxo[ "txid" ] = item[ "txid" ];
+                utxo[ "vout" ] = item[ "vout" ];
+                utxo[ "amnt" ] = item[ "value" ];
+                utxo[ "addy" ] = address;
+                utxo[ "skey" ] = privkey;
+                if ( privkey_info.length > 1 ) utxo[ "toxic" ] = true;
+                obj.push( utxo );
+            });
+            return obj;
+        }
+        var utxoLoop = async () => {
+            var i; for ( i=0; i<emessbee.state.utxos.length; i++ ) {
+                var privkey = emessbee.state.utxos[ i ][ "skey" ];
+                var item_to_pass = [ privkey ];
+                if ( "toxic" in emessbee.state.utxos[ i ] ) item_to_pass.push( "toxic" );
+                var utxos = await getUTXOs( item_to_pass );
+                var utxo_identifier = emessbee.state.utxos[ i ][ "txid" ] + ":" + emessbee.state.utxos[ i ][ "vout" ];
+                var keep = false;
+                utxos.every( output => {
+                    var output_identifier = output[ "txid" ] + ":" + output[ "vout" ];
+                    if ( output_identifier === utxo_identifier ) {
+                        keep = true;
+                        return;
                     }
+                    return true;
+                });
+                if ( !keep ) {
+                    emessbee.state.utxos.splice( i, 1 );
+                    i = i - 1;
+                }
+                await emessbee.waitSomeSeconds( 1 );
+            }
+            var i; for ( i=0; i<emessbee.state.privkeys.length; i++ ) {
+                var item_to_pass = [ emessbee.state.privkeys[ i ][ 0 ] ];
+                if ( emessbee.state.privkeys[ i ].length > 1 ) item_to_pass.push( "toxic" );
+                var utxos = await getUTXOs( item_to_pass );
+                var secondary = JSON.parse( JSON.stringify( utxos ) );
+                secondary.forEach( ( utxo, index ) => {
+                    var existing_utxos = JSON.parse( JSON.stringify( emessbee.state.utxos ) );
+                    existing_utxos = existing_utxos.map( JSON.stringify );
+                    if ( existing_utxos.includes( JSON.stringify( utxo ) ) ) utxos.splice( index, 1 );
+                });
+                emessbee.state.utxos.push( ...utxos );
+                await emessbee.waitSomeSeconds( 1 );
+            }
+            var bal = emessbee.getBalance( emessbee.state.utxos );
+            var toxic_bal = emessbee.getToxicBalance( emessbee.state.utxos );
+            $( '.balance_div' ).innerHTML = `<span class="balance">${bal}</span> sats`;
+            $( '.toxic_balance_div' ).innerHTML = `<span class="toxic_balance">${toxic_bal}</span> sats`;
+            await emessbee.waitSomeSeconds( 10 );
+            utxoLoop();
+        }
+        //put this at the bottom of your script
+        if ( sessionStorage[ "state" ] ) emessbee.state = JSON.parse( sessionStorage[ "state" ] );
+        utxoLoop();
+        $( '.join_btn' ).onclick = async () => {
+            //round 1
+            var modulo = 7;
+            var since = Math.floor( Date.now() / 1000 ) - 600;
+            var blockhash = await emessbee.findLastModulatedBlockhash( modulo );
+            var amount = 10_000;
+            var feerate = 30;
+            if ( amount + feerate + 330 >= emessbee.getBalance( emessbee.state.utxos ) && amount + feerate + 330 >= emessbee.getToxicBalance( emessbee.state.utxos ) ) return alert( `you do not have enough money to do this coinjoin` );
+            var for_coinjoin = true;
+            var utxos = emessbee.getUtxos( emessbee.state.utxos, amount + feerate, for_coinjoin );
+            var toxic = true;
+            var showmodal = false;
+            var my_change_addy = receive( toxic, showmodal );
+            var keypair = emessbee.genKeypair();
+            var nostr_privkey = keypair[ 0 ];
+            var nostr_pubkey = keypair[ 1 ];
+            var ringsig_keypair = ringSig.genKeypair();
+            var ringsig_privkey = ringsig_keypair[ 0 ];
+            var ringsig_pubkey = ringsig_keypair[ 1 ];
+            var msg = JSON.stringify({
+                type: "round_1",
+                msg: {
+                    amount,
+                    feerate,
+                    inputs: utxos,
+                    change: my_change_addy,
+                    ringsig_pubkey,
+                },
+            });
+            var kind = 46048;
+            var tags = [ [ "e", blockhash ] ];
+            var event = await emessbee.prepEvent( nostr_privkey, msg, kind, tags );
+            var relay = "wss://nostrue.com";
+            var event_id = emessbee.sendEvent( event, relay );
+            await emessbee.waitSomeSeconds( 10 );
+            var until = null;
+            var since = since;
+            var limit = null;
+            var etags = [ blockhash ];
+            var ptags = null;
+            var events = await emessbee.getEvents( relay, [ 46048 ], until, since, limit, etags, ptags );
+            console.log( `time for round 2` );
+            //round 2
+            //TODO: kick out anyone who sent invalid data or no data
+            var ring = [];
+            var cj_inputs = [];
+            var change_outputs = [];
+            var num_contributors = 0;
+            var mapping = [];
+            events.forEach( item => {
+                var content = JSON.parse( item[ "content" ] );
+                if ( content[ "type" ] != "round_1" ) return;
+                if ( content[ "msg" ][ "amount" ] != amount ) return;
+                if ( content[ "msg" ][ "feerate" ] != feerate ) return;
+                if ( content[ "msg" ][ "inputs" ].length > 2 ) return;
+                var inputs = content[ "msg" ][ "inputs" ];
+                var inputs_sum = 0;
+                inputs.forEach( input => inputs_sum = inputs_sum + input[ "amnt" ] );
+                if ( inputs_sum < amount + 330 ) return;
+                var change_amnt = inputs_sum - amount;
+                ring.push( content[ "msg" ][ "ringsig_pubkey" ] );
+                cj_inputs.push( ...content[ "msg" ][ "inputs" ] );
+                change_outputs.push( emessbee.getVout( change_amnt, content[ "msg" ][ "change" ] ) );
+                num_contributors = num_contributors + 1;
+                mapping.push( [ content[ "msg" ][ "change" ], inputs ] );
+            });
+            ring.sort();
+            var dummy_key = "8d05737897e7e2fb529c6405f2e80130f8ca609afc7f9da9b1e691dc96fad587";
+            ring.push( dummy_key );
+            var idx = ring.indexOf( ringsig_pubkey );
+            var sig = ringSig.makeSig( blockhash, ringsig_privkey, ring, idx );
+            var toxic = false;
+            var my_cj_addy = receive( toxic, showmodal );
+            var msg = JSON.stringify({
+                type: "round_2",
+                msg: {
+                    ring_sig: sig,
+                    cj_addy: my_cj_addy,
+                },
+            });
+            var kind = 46048;
+            var tags = [ [ "e", blockhash ] ];
+            var keypair = emessbee.genKeypair();
+            var nostr_privkey = keypair[ 0 ];
+            var nostr_pubkey = keypair[ 1 ];
+            var event = await emessbee.prepEvent( nostr_privkey, msg, kind, tags );
+            var relay = "wss://nostrue.com";
+            var event_id = emessbee.sendEvent( event, relay );
+            await emessbee.waitSomeSeconds( 10 );
+            var until = null;
+            var since = since;
+            var limit = null;
+            var etags = [ blockhash ];
+            var ptags = null;
+            var events = await emessbee.getEvents( relay, [ 46048 ], until, since, limit, etags, ptags );
+            console.log( `time for round 3` );
+            //round 3
+            //TODO: kick out anyone who sent invalid data or no data
+            var num_valid_sigs = 0;
+            var cj_outputs = [];
+            events.forEach( item => {
+                if ( JSON.parse( item[ "content" ] )[ "type" ] != "round_2" ) return;
+                var sig = JSON.parse( item[ "content" ] )[ "msg" ][ "ring_sig" ];
+                var sig_is_valid = ringSig.checkSig(sig,blockhash,ring);
+                if ( !sig_is_valid ) return;
+                num_valid_sigs = num_valid_sigs + 1;
+                cj_outputs.push( emessbee.getVout( amount, JSON.parse( item[ "content" ] )[ "msg" ][ "cj_addy" ] ) );
+            });
+            var all_outputs = [ ...change_outputs, ...cj_outputs ];
+            cj_inputs.sort( ( a, b ) => {var a_item = a[ "txid" ] + ":" + a[ "vout" ]; var b_item = b[ "txid" ] + ":" + b[ "vout" ]; var items = [a_item, b_item].sort(); return Number( items[ 0 ] === a_item );});
+            cj_inputs.forEach( ( item, index ) => cj_inputs[ index ] = emessbee.getVin( item[ "txid" ], item[ "vout" ], item[ "amnt" ], item[ "addy" ] ) );
+            all_outputs.sort( ( a, b ) => {var a_item = a[ "scriptPubKey" ][ 1 ]; var b_item = b[ "scriptPubKey" ][ 1 ]; var items = [a_item, b_item].sort(); return Number( items[ 0 ] === a_item );});
+            var txdata = tapscript.Tx.create({
+                vin: cj_inputs,
+                vout: all_outputs,
+            });
+            var vsize = tapscript.Tx.util.getTxSize( txdata ).vsize + ( 17 * txdata.vin.length );
+            var fee = vsize * feerate;
+            var fee_divided = Math.ceil( fee / num_contributors );
+            mapping.forEach( ( item, index ) => {
+                var inputs = item[ 1 ];
+                var inputs_sum = 0;
+                inputs.forEach( input => inputs_sum = inputs_sum + input[ "amnt" ] );
+                mapping[ index ].push( inputs_sum-amount-fee_divided );
+            });
+            all_outputs.forEach( ( item, index ) => {
+                var address_sought = tapscript.Address.fromScriptPubKey( item[ "scriptPubKey" ], emessbee.network );
+                var i; for ( i=0; i<mapping.length; i++ ) {
+                    if ( address_sought === mapping[ i ][ 0 ] ) {
+                        all_outputs[ index ][ "value" ] = mapping[i][2];
+                        break;
+                    }
+                }
+            });
+            var txdata = tapscript.Tx.create({
+                vin: cj_inputs,
+                vout: all_outputs,
+            });
+            var sigs = [];
+            txdata.vin.forEach( ( item, index ) => {
+                var utxo_sought;
+                var identifier_needed=`${item["txid"]}:${item["vout"]}`;
+                emessbee.state.utxos.every( utxo => {
+                    var identifier_available = `${utxo[ "txid" ]}:${utxo[ "vout" ]}`;
+                    if ( identifier_available !== identifier_needed ) return true;
+                    utxo_sought = utxo;
+                    return;
+                });
+                if ( utxo_sought ) var sig = tapscript.Signer.taproot.sign( utxo_sought[ "skey" ], txdata, index ).hex;
+                if ( utxo_sought ) sigs.push( [ sig, index ] );
+            });
+            //make different message for new ring sig
+            var array = Array.from( emessbee.hexToBytes( blockhash ) );
+            array.forEach( ( item, index ) => {if ( index % 2 ) array[ index ] = "ff";});
+            var ring_msg = emessbee.bytesToHex( array );
+            var ring_sig = ringSig.makeSig( ring_msg, ringsig_privkey, ring, idx );
+            var msg = JSON.stringify({
+                type: "round_3",
+                msg: {
+                    btc_sigs: sigs,
+                    ring_sig: ring_sig,
+                },
+            });
+            var kind = 46048;
+            var tags = [ [ "e", blockhash ] ];
+            var keypair = emessbee.genKeypair();
+            var nostr_privkey = keypair[ 0 ];
+            var nostr_pubkey = keypair[ 1 ];
+            var event = await emessbee.prepEvent( nostr_privkey, msg, kind, tags );
+            var relay = "wss://nostrue.com";
+            var event_id = emessbee.sendEvent( event, relay );
+            await emessbee.waitSomeSeconds( 10 );
+            var until = null;
+            var since = since;
+            var limit = null;
+            var etags = [ blockhash ];
+            var ptags = null;
+            var events = await emessbee.getEvents( relay, [ 46048 ], until, since, limit, etags, ptags );
+            //broadcast time!
+            //TODO: kick out anyone who sent invalid data or no data
+            var num_valid_sigs = 0;
+            var btc_sigs = [];
+            events.forEach( item => {
+                if ( JSON.parse( item[ "content" ] )[ "type" ] != "round_3" ) return;
+                var sig = JSON.parse( item[ "content" ] )[ "msg" ][ "ring_sig" ];
+                var sig_is_valid = ringSig.checkSig(sig, ring_msg, ring);
+                if ( !sig_is_valid ) return;
+                num_valid_sigs = num_valid_sigs + 1;
+                btc_sigs.push( ...JSON.parse( item[ "content" ] )[ "msg" ][ "btc_sigs" ] );
+            });
+            btc_sigs.forEach( sig => txdata.vin[ sig[ 1 ] ].witness = [ sig[ 0 ] ] );
+            var txhex = tapscript.Tx.encode( txdata ).hex;
+            showModal( `<p>send this raw transaction</p>` + `<p>${txhex}</p>` );
+        }
+        $( '.send_btn' ).onclick = async () => {
+            var destino = prompt( `enter a destination address` );
+            if ( !emessbee.isValidAddress( destino ) ) return alert( `try again with a valid bitcoin address` );
+            var amnt = Number( prompt( `enter an amount of sats you want to send there` ) );
+            if ( amnt < 546 || isNaN( amnt ) ) return alert( `try again with a valid amount` );
+            var first_amount_check = emessbee.getBalance( emessbee.state.utxos ) > amnt + 330;
+            if ( !first_amount_check ) first_amount_check = emessbee.getToxicBalance( emessbee.state.utxos ) > amnt + 330;
+            if ( !first_amount_check ) return alert( `Sorry, you don't have enough money, please try again` );
+            var fee_options = await emessbee.getThreeFeeRates();
+            var sats_per_byte = Number( prompt( `Please enter a fee rate as a number. Specifically, the number of sats per byte you want to pay. The minimum rate is ${fee_options[ 0 ]}, the average rate is ${fee_options[ 1 ]}, and the urgent rate is ${fee_options[ 2 ]}.` ) );
+            if ( !sats_per_byte ) return alert( "You entered an invalid fee rate. You must enter a number greater than 0, such as 5, 10, or 25. Please try again." );
+            var for_coinjoin = false;
+            var utxos = emessbee.getUtxos( emessbee.state.utxos, amnt, for_coinjoin );
+            if ( !utxos ) return;
+            var set_has_toxins;
+            utxos.forEach( item => {
+                if ( "toxic" in item ) set_has_toxins = true;
+            });
+            if ( !set_has_toxins ) var sum_so_far = emessbee.getBalance( utxos );
+            else var sum_so_far = emessbee.getToxicBalance( utxos );
+            var change_amnt = sum_so_far - amnt;
+            var toxic = false;
+            var showmodal = false;
+            var change_addy = receive( toxic, showmodal );
+            var txdata = tapscript.Tx.create({
+                vin: [],
+                vout: [
+                    emessbee.getVout( amnt, destino ),
+                    emessbee.getVout( change_amnt, change_addy ),
+                ],
+            });
+            utxos.forEach( utxo => txdata.vin.push( emessbee.getVin( utxo[ "txid" ], utxo[ "vout" ], utxo[ "amnt" ], utxo[ "addy" ] ) ) );
+            //I assumes signatures cost 17 vbytes because they are 64 bytes apiece plus, I assume, 2 bytes for stating their length, and, since
+            //those 66 bytes are in the witness stack, they get the witness discount by dividing by 4 -- yielding 16.5 i.e. 17 vbytes per sig
+            var vsize = tapscript.Tx.util.getTxSize( txdata ).vsize + ( 17 * txdata.vin.length );
+            var fee_so_far = vsize * sats_per_byte;
+            var need_extra_input = false;
+            if ( txdata[ "vout" ][ 1 ][ "value" ] - fee_so_far < 330 ) need_extra_input = true;
+            if ( need_extra_input ) {
+                //each extra input adds 41 + 17 = 58 vbytes
+                var fee_so_far = fee_so_far + ( 58 * sats_per_byte );
+                var remaining_utxos = JSON.parse( JSON.stringify( emessbee.state.utxos ) );
+                remaining_utxos = remaining_utxos.map( JSON.stringify );
+                utxos.forEach( ( utxo, index ) => {
+                    if ( remaining_utxos.includes( JSON.stringify( utxo ) ) ) remaining_utxos.splice( remaining_utxos.indexOf( JSON.stringify( utxo ) ), 1 );
+                });
+                remaining_utxos = remaining_utxos.map( JSON.parse );
+                var biggest_utxo_index;
+                var biggest_utxo_amnt = 0;
+                var i; for ( i=0; i<remaining_utxos.length; i++ ) {
+                    var utxo = remaining_utxos[ i ];
+                    var index = i;
+                    if ( utxo[ "amnt" ] > biggest_utxo_amnt ) {
+                        biggest_utxo_index = index;
+                        biggest_utxo_amnt = utxo[ "amnt" ];
+                    }
+                }
                     if ( sum_so_far + biggest_utxo_amnt - txdata[ "vout" ][ 0 ][ "value" ] - fee_so_far < 330 ) {
                         return alert( `Sorry, due to fees, you don't have enough money to do this transaction. Please top up your wallet and try again` );
                     } else {
@@ -205,325 +410,8 @@
                 var txhex = tapscript.Tx.encode( txdata ).hex;
                 showModal( `<p>send this raw transaction</p>` + `<p>${txhex}</p>` );
             }
-            $( '.join_btn' ).onclick = async () => {
-                //there are three rounds of communication
-                //in round one, everyone submits (an) input(s), a change address, and a pubkey
-                //in round two, everyone submits a ring signature and an equal amount address
-                //in round three, everyone submits a bitcoin signature
-                //if, in round two, you end up with a wrong number of addresses, reveal the
-                //privkey to your ring signature's key. Take in all the revealed ones and
-                //check if it matches any of the pubkeys submitted with an input. If any input
-                //did not submit a ring key or submitted a ring key twice, kick them out, and
-                //restart round two with a new ring sig and a new address for the smaller cohort
-                //if, in round three, you end up with a wrong number of valid signatures, reveal
-                //the privkey to your ring signature's key. Take in all the revealed ones and
-                //check if it matches any of the pubkeys submitted with an input. If any input
-                //did not submit a ring key or submitted a ring key twice, kick them out, and
-                //restart round two with a new ring sig and a new address for the smaller cohort
-                //eventually this protocol terminates in a bitcoin transaction signed by all honest
-                //parties, and any party can therefore broadcast it
-
-                //round 1
-
-                var modulo = 3;
-                var since = Math.floor( Date.now() / 1000 ) - 600;
-                var blockhash = await emessbee.findLastModulatedBlockhash( modulo );
-                var amount = 10_000;
-                var feerate = 30;
-                if ( amount + feerate + 330 >= emessbee.getBalance( emessbee.state.utxos ) && amount + feerate + 330 >= emessbee.getToxicBalance( emessbee.state.utxos ) ) return alert( `you do not have enough money to do this coinjoin` );
-                var for_coinjoin = true;
-                var utxos = emessbee.getUtxos( emessbee.state.utxos, amount + feerate, for_coinjoin );
-                var toxic = true;
-                var showmodal = false;
-                var my_change_addy = receive( toxic, showmodal );
-                var keypair = emessbee.genKeypair();
-                var nostr_privkey = keypair[ 0 ];
-                var nostr_pubkey = keypair[ 1 ];
-                var ringsig_keypair = ringSig.genKeypair();
-                var ringsig_privkey = ringsig_keypair[ 0 ];
-                var ringsig_pubkey = ringsig_keypair[ 1 ];
-                var msg = JSON.stringify({
-                    type: "round_1",
-                    msg: {
-                        amount,
-                        feerate,
-                        inputs: utxos,
-                        change: my_change_addy,
-                        ringsig_pubkey,
-                    },
-                });
-                var kind = 46048;
-                var tags = [ [ "e", blockhash ] ];
-                var event = await emessbee.prepEvent( nostr_privkey, msg, kind, tags );
-                var relay = "wss://nostrue.com";
-                var event_id = emessbee.sendEvent( event, relay );
-                // await waitForNextDesiredBlock( modulo, blockhash );
-                await emessbee.waitSomeSeconds( 10 );
-                var until = null;
-                var since = since;
-                var limit = null;
-                var etags = [ blockhash ];
-                var ptags = null;
-                var events = await emessbee.getEvents( relay, [ 46048 ], until, since, limit, etags, ptags );
-
-                console.log( `time for round 2` );
-                //round 2
-                //TODO: kick out anyone who sent invalid data or no data
-
-                var ring = [];
-                var cj_inputs = [];
-                var change_outputs = [];
-                var num_contributors = 0;
-                var mapping = [];
-                events.forEach( item => {
-                    if ( JSON.parse( item[ "content" ] )[ "type" ] != "round_1" ) return;
-                    if ( JSON.parse( item[ "content" ] )[ "msg" ][ "amount" ] != amount ) return;
-                    if ( JSON.parse( item[ "content" ] )[ "msg" ][ "feerate" ] != feerate ) return;
-                    if ( JSON.parse( item[ "content" ] )[ "msg" ][ "inputs" ].length > 2 ) return;
-                    var inputs = JSON.parse( item[ "content" ] )[ "msg" ][ "inputs" ];
-                    var inputs_sum = 0;
-                    inputs.forEach( input => inputs_sum = inputs_sum + input[ "amnt" ] );
-                    if ( inputs_sum < amount + 330 ) return;
-                    var change_amnt = inputs_sum - amount;
-                    ring.push( JSON.parse( item[ "content" ] )[ "msg" ][ "ringsig_pubkey" ] );
-                    cj_inputs.push( ...JSON.parse( item[ "content" ] )[ "msg" ][ "inputs" ] );
-                    change_outputs.push( emessbee.getVout( change_amnt, JSON.parse( item[ "content" ] )[ "msg" ][ "change" ] ) );
-                    num_contributors = num_contributors + 1;
-                    mapping.push( [ JSON.parse( item[ "content" ] )[ "msg" ][ "change" ], inputs ] );
-                });
-                ring.sort();
-                var dummy_key = "8d05737897e7e2fb529c6405f2e80130f8ca609afc7f9da9b1e691dc96fad587";
-                ring.push( dummy_key );
-                var idx = ring.indexOf( ringsig_pubkey );
-                var sig = ringSig.makeSig( blockhash, ringsig_privkey, ring, idx );
-                // ringSig.checkSig( sig, blockhash, ring );
-                var toxic = false;
-                var my_cj_addy = receive( toxic, showmodal );
-                var msg = JSON.stringify({
-                    type: "round_2",
-                    msg: {
-                        ring_sig: sig,
-                        cj_addy: my_cj_addy,
-                    },
-                });
-                var kind = 46048;
-                var tags = [ [ "e", blockhash ] ];
-                var keypair = emessbee.genKeypair();
-                var nostr_privkey = keypair[ 0 ];
-                var nostr_pubkey = keypair[ 1 ];
-                var event = await emessbee.prepEvent( nostr_privkey, msg, kind, tags );
-                var relay = "wss://nostrue.com";
-                var event_id = emessbee.sendEvent( event, relay );
-                // await waitForNextDesiredBlock( modulo, blockhash );
-                await emessbee.waitSomeSeconds( 10 );
-                var until = null;
-                var since = since;
-                var limit = null;
-                var etags = [ blockhash ];
-                var ptags = null;
-                var events = await emessbee.getEvents( relay, [ 46048 ], until, since, limit, etags, ptags );
-
-                console.log( `time for round 3` );
-                //round 3
-                //TODO: kick out anyone who sent invalid data or no data
-
-                var num_valid_sigs = 0;
-                var cj_outputs = [];
-                events.forEach( item => {
-                    if ( JSON.parse( item[ "content" ] )[ "type" ] != "round_2" ) return;
-                    var sig = JSON.parse( item[ "content" ] )[ "msg" ][ "ring_sig" ];
-                    var sig_is_valid = ringSig.checkSig( sig, blockhash, ring );
-                    if ( !sig_is_valid ) return;
-                    num_valid_sigs = num_valid_sigs + 1;
-                    cj_outputs.push( emessbee.getVout( amount, JSON.parse( item[ "content" ] )[ "msg" ][ "cj_addy" ] ) );
-                });
-                var all_outputs = [ ...change_outputs, ...cj_outputs ];
-                cj_inputs.sort( ( a, b ) => {var a_item = a[ "txid" ] + ":" + a[ "vout" ]; var b_item = b[ "txid" ] + ":" + b[ "vout" ]; var items = [a_item, b_item].sort(); return Number( items[ 0 ] === a_item );});
-                cj_inputs.forEach( ( item, index ) => cj_inputs[ index ] = emessbee.getVin( item[ "txid" ], item[ "vout" ], item[ "amnt" ], item[ "addy" ] ) );
-                all_outputs.sort( ( a, b ) => {var a_item = a[ "scriptPubKey" ][ 1 ]; var b_item = b[ "scriptPubKey" ][ 1 ]; var items = [a_item, b_item].sort(); return Number( items[ 0 ] === a_item );});
-                var txdata = tapscript.Tx.create({
-                    vin: cj_inputs,
-                    vout: all_outputs,
-                });
-
-                var vsize = tapscript.Tx.util.getTxSize( txdata ).vsize + ( 17 * txdata.vin.length );
-                var fee = vsize * feerate;
-                var fee_divided = Math.ceil( fee / num_contributors );
-                mapping.forEach( ( item, index ) => {
-                    var inputs = item[ 1 ];
-                    var inputs_sum = 0;
-                    inputs.forEach( input => inputs_sum = inputs_sum + input[ "amnt" ] );
-                    mapping[ index ].push( inputs_sum - amount - fee_divided );
-                });
-
-                all_outputs.forEach( ( item, index ) => {
-                    var address_sought = tapscript.Address.fromScriptPubKey( item[ "scriptPubKey" ], emessbee.network );
-                    var i; for ( i=0; i<mapping.length; i++ ) {
-                        if ( address_sought === mapping[ i ][ 0 ] ) {
-                            all_outputs[ index ][ "value" ] = mapping[ i ][ 2 ];
-                            break;
-                        }
-                    }
-                });
-
-                var txdata = tapscript.Tx.create({
-                    vin: cj_inputs,
-                    vout: all_outputs,
-                });
-                var sigs = [];
-                txdata.vin.forEach( ( item, index ) => {
-                    var utxo_sought;
-                    var identifier_needed = `${item[ "txid" ]}:${item[ "vout" ]}`;
-                    emessbee.state.utxos.every( utxo => {
-                        var identifier_available = `${utxo[ "txid" ]}:${utxo[ "vout" ]}`;
-                        if ( identifier_available !== identifier_needed ) return true;
-                        utxo_sought = utxo;
-                        return;
-                    });
-                    if ( utxo_sought ) sigs.push( [ tapscript.Signer.taproot.sign( utxo_sought[ "skey" ], txdata, index ).hex, index ] );
-                });
-
-                //make different message for new sig
-                var array = Array.from( emessbee.hexToBytes( blockhash ) );
-                array.forEach( ( item, index ) => {if ( index % 2 ) array[ index ] = "ff";});
-                var ring_msg = emessbee.bytesToHex( array );
-
-                var ring_sig = ringSig.makeSig( ring_msg, ringsig_privkey, ring, idx );
-
-                var msg = JSON.stringify({
-                    type: "round_3",
-                    msg: {
-                        btc_sigs: sigs,
-                        ring_sig: ring_sig,
-                    },
-                });
-                var kind = 46048;
-                var tags = [ [ "e", blockhash ] ];
-                var keypair = emessbee.genKeypair();
-                var nostr_privkey = keypair[ 0 ];
-                var nostr_pubkey = keypair[ 1 ];
-                var event = await emessbee.prepEvent( nostr_privkey, msg, kind, tags );
-                var relay = "wss://nostrue.com";
-                var event_id = emessbee.sendEvent( event, relay );
-                // await waitForNextDesiredBlock( modulo, blockhash );
-                await emessbee.waitSomeSeconds( 10 );
-                var until = null;
-                var since = since;
-                var limit = null;
-                var etags = [ blockhash ];
-                var ptags = null;
-                var events = await emessbee.getEvents( relay, [ 46048 ], until, since, limit, etags, ptags );
-
-                //broadcast time!
-                //TODO: kick out anyone who sent invalid data or no data
-
-                var num_valid_sigs = 0;
-                var btc_sigs = [];
-                events.forEach( item => {
-                    if ( JSON.parse( item[ "content" ] )[ "type" ] != "round_3" ) return;
-                    var sig = JSON.parse( item[ "content" ] )[ "msg" ][ "ring_sig" ];
-                    var sig_is_valid = ringSig.checkSig( sig, ring_msg, ring );
-                    if ( !sig_is_valid ) return;
-                    num_valid_sigs = num_valid_sigs + 1;
-                    btc_sigs.push( ...JSON.parse( item[ "content" ] )[ "msg" ][ "btc_sigs" ] );
-                });
-
-                btc_sigs.forEach( sig => txdata.vin[ sig[ 1 ] ].witness = [ sig[ 0 ] ] );
-                var txhex = tapscript.Tx.encode( txdata ).hex;
-                showModal( `<p>send this raw transaction</p>` + `<p>${txhex}</p>` );
-            }
-            var receive = ( toxic, showmodal ) => {
-                var privkey = emessbee.bytesToHex( nobleSecp256k1.utils.randomPrivateKey() );
-                var pubkey = nobleSecp256k1.getPublicKey( privkey, true ).substring( 2 );
-                var address = tapscript.Address.fromScriptPubKey( [ "OP_1", pubkey ], emessbee.network );
-                var item_to_push = [privkey];
-                if ( toxic ) item_to_push.push( "toxic" );
-                emessbee.state.privkeys.push( item_to_push );
-                sessionStorage[ "state" ] = JSON.stringify( emessbee.state );
-                if ( showmodal ) {
-                    var url = "bitcoin:" + address;
-                    var a = document.createElement( "a" );
-                    a.href = url;
-                    a.target = "_blank";
-                    var img = emessbee.createQR( url.toUpperCase() );
-                    img.style.maxWidth = "15rem"
-                    a.append( img );
-                    var prep_div = document.createElement( "div" );
-                    prep_div.append( a );
-                    var div_html = prep_div.innerHTML;
-                    var html = `${div_html}`;
-                    showModal( html + `<p>${address}</p>` );
-                }
-                return address;
-            }
-            $( '.receive_btn' ).onclick = () => {var toxic = false;var showmodal = true;console.log( receive( toxic, showmodal ) );}
-            var getUTXOs = async privkey_info => {
-                var privkey = privkey_info[ 0 ];
-                var pubkey = nobleSecp256k1.getPublicKey( privkey, true ).substring( 2 );
-                var address = tapscript.Address.fromScriptPubKey( [ "OP_1", pubkey ], emessbee.network );
-                var esplorautxos = await emessbee.getData( "https://mutinynet.com/api/address/" + address + "/utxo" );
-                esplorautxos = JSON.parse( esplorautxos );
-                var obj = [];
-                esplorautxos.forEach( function( item, index ) {
-                    var utxo = {}
-                    utxo[ "txid" ] = item[ "txid" ];
-                    utxo[ "vout" ] = item[ "vout" ];
-                    utxo[ "amnt" ] = item[ "value" ];
-                    utxo[ "addy" ] = address;
-                    utxo[ "skey" ] = privkey;
-                    if ( privkey_info.length > 1 ) utxo[ "toxic" ] = true;
-                    obj.push( utxo );
-                });
-                // if ( obj.length ) console.log( `found ${obj.length} utxos in address ${address}` );
-                return obj;
-            }
-            var utxoLoop = async () => {
-                // console.log( `checking for utxos...` );
-                var i; for ( i=0; i<emessbee.state.utxos.length; i++ ) {
-                    var privkey = emessbee.state.utxos[ i ][ "skey" ];
-                    var item_to_pass = [ privkey ];
-                    if ( "toxic" in emessbee.state.utxos[ i ] ) item_to_pass.push( "toxic" );
-                    var utxos = await getUTXOs( item_to_pass );
-                    var utxo_identifier = emessbee.state.utxos[ i ][ "txid" ] + ":" + emessbee.state.utxos[ i ][ "vout" ];
-                    var keep = false;
-                    utxos.every( output => {
-                        var output_identifier = output[ "txid" ] + ":" + output[ "vout" ];
-                        if ( output_identifier === utxo_identifier ) {
-                            keep = true;
-                            return;
-                        }
-                        return true;
-                    });
-                    if ( !keep ) {
-                        emessbee.state.utxos.splice( i, 1 );
-                        i = i - 1;
-                    }
-                    await emessbee.waitSomeSeconds( 1 );
-                }
-                var i; for ( i=0; i<emessbee.state.privkeys.length; i++ ) {
-                    var item_to_pass = [ emessbee.state.privkeys[ i ][ 0 ] ];
-                    if ( emessbee.state.privkeys[ i ].length > 1 ) item_to_pass.push( "toxic" );
-                    var utxos = await getUTXOs( item_to_pass );
-                    var secondary = JSON.parse( JSON.stringify( utxos ) );
-                    secondary.forEach( ( utxo, index ) => {
-                        var existing_utxos = JSON.parse( JSON.stringify( emessbee.state.utxos ) );
-                        existing_utxos = existing_utxos.map( JSON.stringify );
-                        if ( existing_utxos.includes( JSON.stringify( utxo ) ) ) utxos.splice( index, 1 );
-                    });
-                    emessbee.state.utxos.push( ...utxos );
-                    await emessbee.waitSomeSeconds( 1 );
-                }
-                var bal = emessbee.getBalance( emessbee.state.utxos );
-                var toxic_bal = emessbee.getToxicBalance( emessbee.state.utxos );
-                $( '.balance_div' ).innerHTML = `<span class="balance">${bal}</span> sats`;
-                $( '.toxic_balance_div' ).innerHTML = `<span class="toxic_balance">${toxic_bal}</span> sats`;
-                await emessbee.waitSomeSeconds( 10 );
-                utxoLoop();
-            }
-            if ( sessionStorage[ "state" ] ) emessbee.state = JSON.parse( sessionStorage[ "state" ] );
-            utxoLoop();
-        </script>
-        <div class="black-bg hidden" onclick="modalVanish();"></div>
-        <div class="modal hidden"></div>
-    </body>
+    </script>
+    <div class="black-bg hidden" onclick="modalVanish();"></div>
+    <div class="modal hidden"></div>
+</body>
 </html>

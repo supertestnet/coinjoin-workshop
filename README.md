@@ -1,4 +1,4 @@
-# Coinjoin workshop
+# Coinjoin workshop -- also known as Emessbee 🐝
 A workshop on constructing coinjoin transactions without a coordinator
 
 # Slideshow

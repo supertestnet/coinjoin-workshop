@@ -36,7 +36,7 @@ var emessbee = {
         value: amnt,
         scriptPubKey: tapscript.Address.toScriptPubKey( addy ),
     }),
-    getEvents: async ( relay, kinds, until, since, limit, etags, ptags ) => {
+    getEvents: async ( relay, ids, kinds, until, since, limit, etags, ptags ) => {
         var socket = new WebSocket( relay );
         var events = [];
         socket.addEventListener( 'message', async function( message ) {
@@ -48,6 +48,7 @@ var emessbee = {
         socket.addEventListener( 'open', async function( e ) {
             var subId   = emessbee.bytesToHex( nobleSecp256k1.utils.randomPrivateKey() ).substring( 0, 16 );
             var filter  = {}
+            if ( ids ) filter.ids = ids;
             if ( kinds ) filter.kinds = kinds;
             if ( until ) filter.until = until;
             if ( since ) filter.since = since;

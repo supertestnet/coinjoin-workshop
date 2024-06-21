@@ -161,6 +161,7 @@
                     ringsig_pubkey,
                 },
             });
+            var ids = null;
             var kind = 46048;
             var tags = [ [ "e", blockhash ] ];
             var event = await emessbee.prepEvent( nostr_privkey, msg, kind, tags );
@@ -172,7 +173,7 @@
             var limit = null;
             var etags = [ blockhash ];
             var ptags = null;
-            var events = await emessbee.getEvents( relay, [ 46048 ], until, since, limit, etags, ptags );
+            var events = await emessbee.getEvents( relay, ids, [ 46048 ], until, since, limit, etags, ptags );
             console.log( `time for round 2` );
             //round 2
             //TODO: kick out anyone who sent invalid data or no data
@@ -212,6 +213,7 @@
                     cj_addy: my_cj_addy,
                 },
             });
+            var ids = null;
             var kind = 46048;
             var tags = [ [ "e", blockhash ] ];
             var keypair = emessbee.genKeypair();
@@ -226,7 +228,7 @@
             var limit = null;
             var etags = [ blockhash ];
             var ptags = null;
-            var events = await emessbee.getEvents( relay, [ 46048 ], until, since, limit, etags, ptags );
+            var events = await emessbee.getEvents( relay, ids, [ 46048 ], until, since, limit, etags, ptags );
             console.log( `time for round 3` );
             //round 3
             //TODO: kick out anyone who sent invalid data or no data
@@ -295,6 +297,7 @@
                     ring_sig: ring_sig,
                 },
             });
+            var ids = null;
             var kind = 46048;
             var tags = [ [ "e", blockhash ] ];
             var keypair = emessbee.genKeypair();
@@ -309,7 +312,7 @@
             var limit = null;
             var etags = [ blockhash ];
             var ptags = null;
-            var events = await emessbee.getEvents( relay, [ 46048 ], until, since, limit, etags, ptags );
+            var events = await emessbee.getEvents( relay, ids, [ 46048 ], until, since, limit, etags, ptags );
             //broadcast time!
             //TODO: kick out anyone who sent invalid data or no data
             var num_valid_sigs = 0;

@@ -164,7 +164,7 @@
             var kind = 46048;
             var tags = [ [ "e", blockhash ] ];
             var event = await emessbee.prepEvent( nostr_privkey, msg, kind, tags );
-            var relay = "wss://nostrue.com";
+            var relay = "wss://nostr.oxtr.dev";
             var event_id = emessbee.sendEvent( event, relay );
             await emessbee.waitSomeSeconds( 10 );
             var until = null;
@@ -218,7 +218,7 @@
             var nostr_privkey = keypair[ 0 ];
             var nostr_pubkey = keypair[ 1 ];
             var event = await emessbee.prepEvent( nostr_privkey, msg, kind, tags );
-            var relay = "wss://nostrue.com";
+            var relay = "wss://nostr.oxtr.dev";
             var event_id = emessbee.sendEvent( event, relay );
             await emessbee.waitSomeSeconds( 10 );
             var until = null;
@@ -301,7 +301,7 @@
             var nostr_privkey = keypair[ 0 ];
             var nostr_pubkey = keypair[ 1 ];
             var event = await emessbee.prepEvent( nostr_privkey, msg, kind, tags );
-            var relay = "wss://nostrue.com";
+            var relay = "wss://nostr.oxtr.dev";
             var event_id = emessbee.sendEvent( event, relay );
             await emessbee.waitSomeSeconds( 10 );
             var until = null;

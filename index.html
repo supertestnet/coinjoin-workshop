@@ -137,7 +137,7 @@
             var modulo = 7;
             var since = Math.floor( Date.now() / 1000 ) - 600;
             var blockhash = await emessbee.findLastModulatedBlockhash( modulo );
-            var amount = 10_000;
+            var amount = 15_000;
             var feerate = 30;
             if ( amount + feerate + 330 >= emessbee.getBalance( emessbee.state.utxos ) && amount + feerate + 330 >= emessbee.getToxicBalance( emessbee.state.utxos ) ) return alert( `you do not have enough money to do this coinjoin` );
             var for_coinjoin = true;
